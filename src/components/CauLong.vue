@@ -18,7 +18,7 @@
               cancel-button-text="No, Thanks"
               :icon="InfoFilled"
               icon-color="#626AEF"
-              title="Are you sure to delete this?"
+              title="Xóa User?, số tiền của user sẽ thêm vào user bị xóa"
               @confirm="removeUser(item, index)"
             >
               <template #reference>
