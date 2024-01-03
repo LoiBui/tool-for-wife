@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 40px">
-    <p style="margin-bottom: 6px; font-size: 12px">Ngày: {{getCurrentDate()}}</p>
+    <p style="margin-bottom: 4px; font-size: 12px">Ngày: {{getCurrentDate()}}</p>
     <div>
       <el-row :gutter="20">
         <el-col
@@ -41,7 +41,7 @@
       </el-row>
     </div>
     <el-table
-      style="margin-top: 40px"
+      style="margin-top: 30px"
       :data="localData.filter((item) => item.active)"
       border
     >
