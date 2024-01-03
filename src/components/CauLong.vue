@@ -62,7 +62,7 @@
 
     <div style="margin-top: 100px">
       <p>Backup</p>
-      <p style="white-space: nowrap; overflow: hidden">
+      <p style="white-space: nowrap; overflow: hidden; font-size: 12px">
         {{ JSON.stringify(localData) }}
       </p>
       <el-button @click="copyBackup" style="margin-top: 10px" type="primary"
