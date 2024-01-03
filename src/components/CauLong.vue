@@ -6,7 +6,7 @@
           style="margin-top: 10px"
           :span="12"
           v-for="(item, index) in localData.filter(
-            (item) => item.active && item.showInput
+            (item) => item.active && item.showInput !== false
           )"
           :key="item.key"
         >
@@ -53,7 +53,7 @@
     </el-table>
 
     <div style="margin-top: 40px">
-        <h4>Thêm User</h4>
+      <h4>Thêm User</h4>
       <el-input v-model="input" placeholder="Nhập tên" />
       <el-button @click="addUser" style="margin-top: 10px" type="primary"
         >Thêm</el-button
@@ -213,7 +213,7 @@ const addUser = (_) => {
   localData.push({
     name: input.value,
     price: 0,
-    key: btoa(input.value),
+    key: JSON.stringify({ key: input.value }),
     days: {
       [currentDay]: 0
     },
