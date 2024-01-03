@@ -1,10 +1,10 @@
 <template>
   <div style="padding: 40px">
-    <p style="margin-bottom: 4px; font-size: 12px">Ngày: {{getCurrentDate()}}</p>
+    <p style="font-size: 12px">Ngày: {{getCurrentDate()}}</p>
     <div>
       <el-row :gutter="20">
         <el-col
-          style="margin-top: 10px"
+          style="margin-top: 8px"
           :span="12"
           v-for="(item, index) in localData.filter(
             (item) => item.active && item.showInput !== false
@@ -41,7 +41,7 @@
       </el-row>
     </div>
     <el-table
-      style="margin-top: 30px"
+      style="margin-top: 20px"
       :data="localData.filter((item) => item.active)"
       border
     >
