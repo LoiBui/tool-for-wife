@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 40px">
+  <div v-if="!isCauLong" style="padding: 40px">
     <el-upload
       class="upload-demo"
       drag
@@ -51,13 +51,18 @@
       >Xuất File</el-button
     >
   </div>
+  <div v-else>
+    <CauLong />
+  </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { exportResultFileExcel } from "./support/BusinessExcel";
 import { ElMessage } from "element-plus";
+import CauLong from "@/components/CauLong";
 
+const isCauLong = window.location.href.includes("cau-long");
 const checkAll = ref(true);
 const isIndeterminate = ref(false);
 
