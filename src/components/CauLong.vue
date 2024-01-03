@@ -54,7 +54,7 @@ const calculatorPrice = (row) => {
       return prev + current[1];
     }, 0) || 0) *
       1000
-  );
+  ).toLocaleString("vi-VI") + " VND";
 };
 
 const getCurrentDate = () => {
