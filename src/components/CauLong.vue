@@ -1,5 +1,6 @@
 <template>
   <div style="padding: 40px">
+    <p style="margin-bottom: 6px; font-size: 12px">Ngày: {{getCurrentDate()}}</p>
     <div>
       <el-row :gutter="20">
         <el-col
