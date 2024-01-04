@@ -4,58 +4,58 @@ const FileSaver = require("file-saver");
 
 const rowValue = [
   {
-    key: "Tên chiến dịch"
+    key: "Tên chiến dịch",
   },
   {
     key: "Số tiền đã chi tiêu (VND)",
-    isPrice: true
+    isPrice: true,
   },
   {
     key: "Số tiền - like",
     default: "",
-    modelCheck: "stl"
+    modelCheck: "stl",
   },
   {
-    key: "Lượt hiển thị"
+    key: "Lượt hiển thị",
   },
   {
     key: "CPM (Chi phí trên mỗi 1.000 lần hiển thị) (VND)",
-    isPrice: true
+    isPrice: true,
   },
   {
-    key: "Người tiếp cận"
+    key: "Người tiếp cận",
   },
   {
     key: "Tần suất",
-    isRound: true
+    isRound: true,
   },
   {
-    key: "Số lần nhấp (Tất cả)"
+    key: "Số lần nhấp (Tất cả)",
   },
   {
     key: "CPC (Tất cả) (VND)",
-    isPrice: true
+    isPrice: true,
   },
   {
     key: "CTR (Tất cả)",
-    isRound: true
+    isRound: true,
   },
   {
     key: "CTR duy nhất (Tất cả)",
     isRound: true,
-    modelCheck: "ctr"
+    modelCheck: "ctr",
   },
   {
     key: "Like/TT",
     default: "",
-    modelCheck: "ltt"
+    modelCheck: "ltt",
   },
   {
-    key: "Lượt click vào liên kết"
+    key: "Lượt click vào liên kết",
   },
   {
-    key: "Kết quả"
-  }
+    key: "Kết quả",
+  },
 ];
 export const exportResultFileExcel = (file, optionKey = []) => {
   const reader = new FileReader();
@@ -68,7 +68,7 @@ export const exportResultFileExcel = (file, optionKey = []) => {
       type: "binary",
       cellDates: true,
       cellNF: false,
-      cellText: false
+      cellText: false,
     });
 
     let checkHeaderRow = true;
@@ -95,7 +95,7 @@ export const exportResultFileExcel = (file, optionKey = []) => {
             const find = excelRow.find((item) => item[0] === element.key);
 
             const obj = {
-              key: element.key
+              key: element.key,
             };
 
             const formatValue = (el, value) => {
@@ -139,8 +139,8 @@ export const writeFile = (data, headerRow) => {
   const workbook = new excel.Workbook();
   const sheet = workbook.addWorksheet("Sheet1", {
     pageSetup: {
-      fitToWidth: 1
-    }
+      fitToWidth: 1,
+    },
   });
 
   data.forEach((row) => {
@@ -152,20 +152,20 @@ export const writeFile = (data, headerRow) => {
 
   let columnIndex = 1;
   sheet.getColumn(1).font = {
-    bold: true
+    bold: true,
   };
   sheet.getColumn(1).width = 45;
   for (columnIndex; columnIndex <= sheet.columnCount; columnIndex++) {
     if (columnIndex === 1) continue;
     sheet.getColumn(columnIndex).width = 28;
     sheet.getColumn(columnIndex).alignment = {
-      wrapText: true
+      wrapText: true,
     };
   }
 
   workbook.xlsx.writeBuffer().then(function (data) {
     var blob = new Blob([data], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     FileSaver.saveAs(blob, "ouput.xlsx");
   });

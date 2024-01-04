@@ -6,7 +6,7 @@ const user = [
   "nguyen van nghia",
   "nguyen van quang",
   "nguyen dinh tuan anh",
-  "nguyen nhat anh"
+  "nguyen nhat anh",
 ];
 
 // ngày cuối: 03/01/2024
@@ -184,7 +184,7 @@ const prices = [
   ["NGUYEN DINH TUAN ANH", "20,000"],
   ["Dang Dinh Dien chuyen tien tu Viettel Money", "20,000"],
   ["DAO THI THUONG chuyen khoan", "10,000"],
-  ["DANG DINH DANG chuyen tien", "60,000"]
+  ["DANG DINH DANG chuyen tien", "60,000"],
 ];
 
 const findUser = (content) => {
