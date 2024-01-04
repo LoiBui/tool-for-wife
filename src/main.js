@@ -5,7 +5,6 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import "./assets/index.css";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
-import "./registerServiceWorker";
 
 window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 
