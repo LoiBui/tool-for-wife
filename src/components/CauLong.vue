@@ -438,7 +438,6 @@ const handleRowClick = (a) => {
     chartData.labels = days.map((item) => item[0]);
     chartData.datasets[0].data = days.map((item) => item[1]);
     chartData.datasets[0].label = a.name;
-    dialogVisible.value = true;
 
     userDetailDay.value = days.map((item) => {
         return {
@@ -446,5 +445,9 @@ const handleRowClick = (a) => {
             price: (item[1] * 1000).toLocaleString("vi-VI") + " VND",
         };
     });
+
+    console.log(userDetailDay, chartData)
+
+    dialogVisible.value = true;
 };
 </script>
