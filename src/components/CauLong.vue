@@ -6,9 +6,7 @@
             <p>Ngày: {{ currentDay }}</p>
             <p>
                 Hôm nay:
-                {{
-                    ((totalPriceToday || 0) * 1000).toLocaleString("vi-VI")
-                }}
+                {{ ((totalPriceToday || 0) * 1000).toLocaleString("vi-VI") }}
                 VND
             </p>
         </div>
@@ -66,6 +64,7 @@
             style="margin-top: 20px"
             :data="localData.filter((item) => item.active)"
             border
+            @row-click="handleRowClick"
         >
             <el-table-column prop="name" label="Tên" width="220" />
             <el-table-column prop="price" label="Tổng Tiền">
@@ -124,11 +123,53 @@
                 >Restore</el-button
             >
         </div>
+
+        <el-dialog v-model="dialogVisible" :fullscreen="true">
+            <div v-if="dialogVisible">
+                <Line
+                    :data="chartData"
+                    :options="{ responsive: true, maintainAspectRatio: false }"
+                />
+            </div>
+
+            <el-table style="margin-top: 20px" :data="userDetailDay" border>
+                <el-table-column prop="day" label="Ngày" width="220" />
+                <el-table-column prop="price" label="Tổng Tiền">
+                    <!-- <template #default="scope">
+                        <el-tag disable-transitions>{{
+                            calculatorPrice(scope.row)
+                        }}</el-tag>
+                    </template> -->
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
+import { ElMessage } from "element-plus";
 import { computed, reactive, ref, watch } from "vue";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from "chart.js";
+import { Line } from "vue-chartjs";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const calculatorPrice = (row) => {
     return (
@@ -142,8 +183,8 @@ const calculatorPrice = (row) => {
     );
 };
 
-const getCurrentDate = () => {
-    const today = new Date();
+const getCurrentDate = (date) => {
+    const today = date || new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // Months start at 0!
     let dd = today.getDate();
@@ -365,5 +406,45 @@ const restore = (_) => {
 
         textarea.value = "";
     } catch (error) {}
+};
+
+//detail user
+const dialogVisible = ref(false);
+
+const chartData = reactive({
+    labels: [],
+    datasets: [
+        {
+            label: "Cubic interpolation (monotone)",
+            data: [],
+            borderColor: "orange",
+            fill: false,
+            cubicInterpolationMode: "monotone",
+            tension: 0.4,
+        },
+    ],
+});
+
+const userDetailDay = ref([]);
+const handleRowClick = (a) => {
+    const days = Object.entries(a.days || {});
+
+    if (days.length <= 0) {
+        return ElMessage({
+            type: "warning",
+            message: `Không có dữ liệu hiển thị`,
+        });
+    }
+    chartData.labels = days.map((item) => item[0]);
+    chartData.datasets[0].data = days.map((item) => item[1]);
+    chartData.datasets[0].label = a.name;
+    dialogVisible.value = true;
+
+    userDetailDay.value = days.map((item) => {
+        return {
+            day: item[0],
+            price: (item[1] * 1000).toLocaleString("vi-VI") + " VND",
+        };
+    });
 };
 </script>
