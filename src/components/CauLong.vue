@@ -268,6 +268,7 @@ const users = [
         days: {},
         active: true,
         showInput: false,
+        isDraw: false,
     },
 ];
 
@@ -283,7 +284,21 @@ for (const item of initLocalData) {
     }
 }
 
-const localData = reactive(initLocalData.filter((item) => item.active));
+const localData = reactive(
+    initLocalData
+        .filter((item) => item.active)
+        .sort((a, b) => {
+            if (a.key === "bi-xoa" || b.key === "bi-xoa") {
+                return 1;
+            }
+            if (calculatorPrice(a) > calculatorPrice(b)) {
+                return -1;
+            } else if (calculatorPrice(a) < calculatorPrice(b)) {
+                return 1;
+            }
+            return 0;
+        })
+);
 
 const totalPriceToday = computed((_) => {
     return localData.reduce((prev, curr) => {
@@ -427,7 +442,7 @@ const chartData = reactive({
 
 const userDetailDay = ref([]);
 const handleRowClick = (a) => {
-    const days = Object.entries(a.days || {});
+    let days = Object.entries(a.days || {});
 
     if (days.length <= 0) {
         return ElMessage({
@@ -435,18 +450,22 @@ const handleRowClick = (a) => {
             message: `Không có dữ liệu hiển thị`,
         });
     }
+
+    days = days.filter((item) => {
+        return item[1] > 0;
+    });
+
     chartData.labels = days.map((item) => item[0]);
     chartData.datasets[0].data = days.map((item) => item[1]);
     chartData.datasets[0].label = a.name;
 
+    console.log(chartData);
     userDetailDay.value = days.map((item) => {
         return {
             day: item[0],
             price: (item[1] * 1000).toLocaleString("vi-VI") + " VND",
         };
     });
-
-    console.log(userDetailDay, chartData)
 
     dialogVisible.value = true;
 };
