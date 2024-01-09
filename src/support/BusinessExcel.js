@@ -5,6 +5,10 @@ const FileSaver = require("file-saver");
 const rowValue = [
     {
         key: "Tên chiến dịch",
+        keyOther: [
+            "Tên nhóm quảng cáo".toLocaleLowerCase().replaceAll(" ", ""),
+            "Tên nhóm".toLocaleLowerCase().replaceAll(" ", ""),
+        ],
     },
     {
         key: "Số tiền đã chi tiêu (VND)",
@@ -31,23 +35,23 @@ const rowValue = [
     },
     {
         key: "Số lần nhấp (Tất cả)",
-        keyOther: ["Số lần nhấp (all)"],
+        keyOther: ["Số lần nhấp (all)".toLocaleLowerCase().replaceAll(" ", "")],
     },
     {
         key: "CPC (Tất cả) (VND)",
         isPrice: true,
-        keyOther: ["CPC (all) (VND)"],
+        keyOther: ["CPC (all) (VND)".toLocaleLowerCase().replaceAll(" ", "")],
     },
     {
         key: "CTR (Tất cả)",
         isRound: true,
-        keyOther: ["CTR (all)"],
+        keyOther: ["CTR (all)".toLocaleLowerCase().replaceAll(" ", "")],
     },
     {
         key: "CTR duy nhất (Tất cả)",
         isRound: true,
         modelCheck: "ctr",
-        keyOther: ["CTR duy nhất (all)"],
+        keyOther: ["CTR duy nhất (all)".toLocaleLowerCase()],
     },
     {
         key: "Like/TT",
@@ -98,8 +102,17 @@ export const exportResultFileExcel = (file, optionKey = []) => {
                     rowValue.forEach((element) => {
                         const find = excelRow.find(
                             (item) =>
-                                item[0] === element.key ||
-                                element?.keyOther?.includes(item[0])
+                                item[0]
+                                    .toLocaleLowerCase()
+                                    .replaceAll(" ", "") ===
+                                    element.key
+                                        .toLocaleLowerCase()
+                                        .replaceAll(" ", "") ||
+                                element?.keyOther?.includes(
+                                    item[0]
+                                        .toLocaleLowerCase()
+                                        .replaceAll(" ", "")
+                                )
                         );
 
                         const obj = {
