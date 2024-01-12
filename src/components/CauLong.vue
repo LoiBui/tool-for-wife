@@ -66,7 +66,27 @@
             border
             @row-click="handleRowClick"
         >
-            <el-table-column prop="name" label="Tên" width="220" />
+            <el-table-column label="TOP Server" width="110">
+                <template #default="scope">
+                    <p style="text-align: center; font-weight: bold">
+                        {{ scope.$index + 1 }}
+                    </p>
+                </template>
+            </el-table-column>
+            <el-table-column prop="name" label="Tên" width="220">
+                <template #default="scope">
+                    <span
+                        :style="{
+                            opacity: scope.$index < 3 ? 1 : 0,
+                        }"
+                    >
+                        <template v-if="scope.$index === 0"> 🏅 </template>
+                        <template v-else-if="scope.$index === 1"> 🥈 </template>
+                        <template v-else> 🥉 </template>
+                    </span>
+                    {{ scope.row.name }}
+                </template>
+            </el-table-column>
             <el-table-column prop="price" label="Tổng Tiền">
                 <template #default="scope">
                     <el-tag disable-transitions>{{
