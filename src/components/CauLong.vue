@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 10px 40px">
+    <div style="padding: 10px 15px">
         <div
             style="font-size: 12px; display: flex; font-weight: bold; gap: 20px"
         >
@@ -66,14 +66,14 @@
             border
             @row-click="handleRowClick"
         >
-            <el-table-column label="TOP Server" width="110">
+            <el-table-column label="TOP" width="55">
                 <template #default="scope">
                     <p style="text-align: center; font-weight: bold">
                         {{ scope.$index + 1 }}
                     </p>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="Tên" width="220">
+            <el-table-column prop="name" label="Tên" width="210">
                 <template #default="scope">
                     <span
                         :style="{
