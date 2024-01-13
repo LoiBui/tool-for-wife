@@ -191,6 +191,16 @@ ChartJS.register(
     Legend
 );
 
+const calculatorPriceNotLabel = (row) => {
+    return (
+        (row?.price || 0) +
+        (Object.entries(row.days).reduce((prev, current) => {
+            return prev + current[1];
+        }, 0) || 0) *
+            1000
+    );
+};
+
 const calculatorPrice = (row) => {
     return (
         (
@@ -311,9 +321,11 @@ const localData = reactive(
             if (a.key === "bi-xoa" || b.key === "bi-xoa") {
                 return 1;
             }
-            if (calculatorPrice(a) > calculatorPrice(b)) {
+            if (calculatorPriceNotLabel(a) > calculatorPriceNotLabel(b)) {
                 return -1;
-            } else if (calculatorPrice(a) < calculatorPrice(b)) {
+            } else if (
+                calculatorPriceNotLabel(a) < calculatorPriceNotLabel(b)
+            ) {
                 return 1;
             }
             return 0;
