@@ -8,17 +8,40 @@
                 style="
                     font-size: 12px;
                     display: flex;
+                    align-items: center;
                     font-weight: bold;
-                    gap: 20px;
+                    gap: 10px;
                 "
             >
-                <p>Ngày: {{ currentDay }}</p>
+                <p>Ngày: <br />{{ currentDay }}</p>
+                <div style="width: 10px"></div>
                 <p>
-                    Hôm nay:
+                    <span style="white-space: nowrap">Hôm nay:</span> <br />
                     {{
                         ((totalPriceToday || 0) * 1000).toLocaleString("vi-VI")
                     }}
                     VND
+                </p>
+                +
+                <p>
+                    <span style="white-space: nowrap">Hiện tại:</span> <br />
+                    <input
+                        type="text"
+                        v-model="totalPriceGlobal"
+                        style="
+                            border: none;
+                            width: 66px;
+                            outline: none;
+                            font-weight: bold;
+                        "
+                        :readonly="!isAllowModifier"
+                        @blur="onPriceGlobalBlur"
+                    />
+                </p>
+                =
+                <p>
+                    <span style="white-space: nowrap">Sau hôm nay:</span> <br />
+                    <span>{{ priceAfterDay.toLocaleString("vi-VI") }} VND</span>
                 </p>
             </div>
             <div>
@@ -159,8 +182,11 @@ const {
     maxPriceToday,
     currentDay,
     isAllowModifier,
+    priceAfterDay,
+    totalPriceGlobal,
     removeUser,
     addUser,
+    onPriceGlobalBlur,
 } = useUsers();
 
 //detail user

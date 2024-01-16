@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import {
     collection,
     getDocs,
@@ -9,8 +9,8 @@ import {
     doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { ElLoading, ElMessage } from "element-plus";
 import { debounce } from "lodash";
-import { ElLoading } from "element-plus";
 // import "./import";
 
 const calculatorPrice = (row) => {
@@ -41,6 +41,8 @@ export const useUsers = (_) => {
     const usersToday = ref([]);
     const currentDay = getCurrentDate();
     const isLoading = ref(true);
+    const totalPriceGlobal = ref(0);
+    let priceId = null;
     const isAllowModifier = ref(window.location.href.includes("bcl142861"));
 
     const fetchingData = async (showLoaing = false) => {
@@ -52,8 +54,16 @@ export const useUsers = (_) => {
         try {
             const result = [];
 
-            const querySnapshot = await getDocs(collection(db, "users"));
-            const querySnapshotDays = await getDocs(collection(db, "days"));
+            const [querySnapshot, querySnapshotDays, totalPriceClub] =
+                await Promise.all([
+                    getDocs(collection(db, "users")),
+                    getDocs(collection(db, "days")),
+                    getDocs(collection(db, "price-clb")),
+                ]);
+
+            priceId = totalPriceClub?.docs?.[0]?.id;
+            totalPriceGlobal.value =
+                totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0;
 
             querySnapshot.forEach((doc) => {
                 result.push({
@@ -120,31 +130,41 @@ export const useUsers = (_) => {
             });
     });
 
-    const onDayPriceChange = debounce(async function (_id, price) {
-        const check = await query(
-            collection(db, "days"),
-            where("userId", "==", _id),
-            where("day", "==", currentDay)
-        );
+    const onDayPriceChange = async function (_id, price) {
+        const loading = ElLoading.service({ fullscreen: true });
+        try {
+            const check = await query(
+                collection(db, "days"),
+                where("userId", "==", _id),
+                where("day", "==", currentDay)
+            );
 
-        const querySnapshot = await getDocs(check);
+            const querySnapshot = await getDocs(check);
 
-        if (querySnapshot.empty) {
-            await addDoc(collection(db, "days"), {
-                userId: _id,
-                price,
-                day: currentDay,
-                order: new Date().getTime(),
+            if (querySnapshot.empty) {
+                await addDoc(collection(db, "days"), {
+                    userId: _id,
+                    price,
+                    day: currentDay,
+                    order: new Date().getTime(),
+                });
+            } else {
+                await updateDoc(doc(db, "days", querySnapshot.docs[0].id), {
+                    price,
+                    order: new Date().getTime(),
+                });
+            }
+
+            fetchingData();
+        } catch (error) {
+            ElMessage({
+                type: "warning",
+                message: error.message,
             });
-        } else {
-            await updateDoc(doc(db, "days", querySnapshot.docs[0].id), {
-                price,
-                order: new Date().getTime(),
-            });
+        } finally {
+            loading.close();
         }
-
-        fetchingData();
-    }, 500);
+    };
 
     const totalPriceToday = computed((_) => {
         return usersToday.value.reduce((prev, curr) => {
@@ -163,29 +183,40 @@ export const useUsers = (_) => {
         }, Number.MIN_VALUE);
     });
 
+    const priceAfterDay = computed((_) => {
+        return +totalPriceGlobal.value + +totalPriceToday.value;
+    });
+
     const removeUser = async (item) => {
         const loading = ElLoading.service({ fullscreen: true });
-        const check = await query(
-            collection(db, "users"),
-            where("isDeteleUser", "==", true)
-        );
+        try {
+            const check = await query(
+                collection(db, "users"),
+                where("isDeteleUser", "==", true)
+            );
 
-        const querySnapshot = await getDocs(check);
+            const querySnapshot = await getDocs(check);
 
-        if (!querySnapshot.empty) {
-            await updateDoc(doc(db, "users", querySnapshot.docs[0].id), {
-                price:
-                    calculatorPrice(item) +
-                    calculatorPrice(querySnapshot.docs[0].data()),
+            if (!querySnapshot.empty) {
+                await updateDoc(doc(db, "users", querySnapshot.docs[0].id), {
+                    price:
+                        calculatorPrice(item) +
+                        calculatorPrice(querySnapshot.docs[0].data()),
+                });
+                await updateDoc(doc(db, "users", item._id), {
+                    active: false,
+                });
+            }
+
+            await fetchingData();
+        } catch (error) {
+            ElMessage({
+                type: "warning",
+                message: error.message,
             });
-            await updateDoc(doc(db, "users", item._id), {
-                active: false,
-            });
+        } finally {
+            loading.close();
         }
-
-        await fetchingData();
-
-        loading.close();
     };
 
     const addUser = async (input) => {
@@ -201,8 +232,25 @@ export const useUsers = (_) => {
 
             await fetchingData();
         } catch (error) {
+            ElMessage({
+                type: "warning",
+                message: error.message,
+            });
         } finally {
             loading.close();
+        }
+    };
+
+    const onPriceGlobalBlur = async (_) => {
+        try {
+            await updateDoc(doc(db, "price-clb", priceId), {
+                totalPrice: totalPriceGlobal.value,
+            });
+        } catch (error) {
+            ElMessage({
+                type: "warning",
+                message: error.message,
+            });
         }
     };
 
@@ -215,9 +263,12 @@ export const useUsers = (_) => {
         onDayPriceChange,
         totalPriceToday,
         maxPriceToday,
+        totalPriceGlobal,
+        priceAfterDay,
         removeUser,
         addUser,
         currentDay,
         isAllowModifier,
+        onPriceGlobalBlur,
     };
 };

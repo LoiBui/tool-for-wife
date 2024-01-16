@@ -1,16 +1,6 @@
 <template>
-    <Line
-        :data="chartData"
-        :options="{
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        }"
-    />
+    <Line :data="chartData" :options="options" v-if="type === 'line'" />
+    <Bubble v-else />
 </template>
 
 <script>
@@ -24,7 +14,7 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import { Line } from "vue-chartjs";
+import { Line, Bubble } from "vue-chartjs";
 
 ChartJS.register(
     CategoryScale,
@@ -37,9 +27,25 @@ ChartJS.register(
 );
 
 export default {
-    props: { chartData: {} },
+    props: { chartData: {}, type: { default: "line" } },
     components: {
         Line,
+        Bubble,
+    },
+    setup() {
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        };
+
+        return {
+            options,
+        };
     },
 };
 </script>
