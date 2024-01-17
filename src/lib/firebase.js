@@ -13,6 +13,17 @@ const firebaseConfig = {
     measurementId: "G-THGEQ9SMK8",
 };
 
+//dev
+// const firebaseConfig = {
+//     apiKey: "AIzaSyCXU32bWUkjlF7HzzE5WXPTYBU29IQswt4",
+//     authDomain: "vuetest198.firebaseapp.com",
+//     databaseURL: "https://vuetest198.firebaseio.com",
+//     projectId: "vuetest198",
+//     storageBucket: "vuetest198.appspot.com",
+//     messagingSenderId: "734760301478",
+//     appId: "1:734760301478:web:773ebc876fb879b028d567",
+// };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

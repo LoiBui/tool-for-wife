@@ -1,4 +1,4 @@
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import {
     collection,
     getDocs,
@@ -10,7 +10,6 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { ElLoading, ElMessage } from "element-plus";
-import { debounce } from "lodash";
 // import "./import";
 
 const calculatorPrice = (row) => {
@@ -21,6 +20,18 @@ const calculatorPrice = (row) => {
         }, 0) || 0) *
             1000
     );
+};
+
+const calculatorCountMatch = (row) => {
+    let totalMatch = 0,
+        totalMatchLost = 0;
+    for (const item of Object.entries(row?.countMatchs || {})) {
+        if (+item?.[1] > 0) {
+            totalMatch += +item[1];
+            totalMatchLost += (+row?.days[item[0]] || 0) / 10;
+        }
+    }
+    return [totalMatch, totalMatchLost];
 };
 
 const getCurrentDate = (date) => {
@@ -69,6 +80,7 @@ export const useUsers = (_) => {
                 result.push({
                     _id: doc.id,
                     dayPrice: 0,
+                    countMatch: 0,
                     ...doc.data(),
                 });
             });
@@ -81,13 +93,16 @@ export const useUsers = (_) => {
 
                 if (!user.days) {
                     user.days = [];
+                    user.countMatchs = [];
                 }
 
                 if (doc.day === currentDay) {
-                    user.dayPrice = doc.price;
+                    user.dayPrice = doc.price || 0;
+                    user.countMatch = +doc.countMatch || 0;
                 }
 
                 user.days[doc.day] = doc.price;
+                user.countMatchs[doc.day] = doc.countMatch || 0;
             });
 
             users.value = [...result];
@@ -123,14 +138,17 @@ export const useUsers = (_) => {
                 return 0;
             })
             .map((item) => {
+                const [totalMatch, totalMatchLost] = calculatorCountMatch(item);
                 return {
                     ...item,
                     totalPrice: calculatorPrice(item),
+                    totalMatch: totalMatch,
+                    totalMatchLost: totalMatchLost,
                 };
             });
     });
 
-    const onDayPriceChange = async function (_id, price) {
+    const onDayPriceChange = async function (_id, price, countMatch) {
         const loading = ElLoading.service({ fullscreen: true });
         try {
             const check = await query(
@@ -146,12 +164,14 @@ export const useUsers = (_) => {
                     userId: _id,
                     price,
                     day: currentDay,
+                    countMatch: +countMatch,
                     order: new Date().getTime(),
                 });
             } else {
                 await updateDoc(doc(db, "days", querySnapshot.docs[0].id), {
                     price,
                     order: new Date().getTime(),
+                    countMatch: +countMatch,
                 });
             }
 
