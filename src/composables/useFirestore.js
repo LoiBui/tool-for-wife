@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { ElLoading, ElMessage } from "element-plus";
+import { uniq } from "lodash";
 // import "./import";
 
 const calculatorPrice = (row) => {
@@ -112,6 +113,12 @@ export const useUsers = (_) => {
                 .sort((x, y) => {
                     return x.order < y.order ? -1 : x.order > y.order ? 1 : 0;
                 });
+
+            checkAndUpdatePriceCLB(
+                totalPriceClub?.docs?.[0]?.data?.()?.lastUpdateDay,
+                result,
+                totalPriceGlobal.value
+            );
         } catch (error) {
             console.log(error);
             users.value = [];
@@ -122,6 +129,35 @@ export const useUsers = (_) => {
     };
 
     fetchingData(true);
+
+    const checkAndUpdatePriceCLB = (lastUpdateDay, users, currentPrice) => {
+        try {
+            const lastDay = uniq(
+                users
+                    .map((item) => Object.entries(item.days).map((it) => it[0]))
+                    .flat(2)
+            )
+                .sort()
+                ?.at(-1);
+
+            if (lastUpdateDay < lastDay) {
+                let total = 0;
+                users
+                    .map((item) => Object.entries(item.days))
+                    .flat(1)
+                    .forEach((element) => {
+                        if (element[0] === lastDay) {
+                            total += element[1];
+                        }
+                    });
+
+                updateDoc(doc(db, "price-clb", priceId), {
+                    totalPrice: total * 1000 + currentPrice,
+                    lastUpdateDay: lastDay,
+                });
+            }
+        } catch (error) {}
+    };
 
     const userList = computed((_) => {
         return users.value
