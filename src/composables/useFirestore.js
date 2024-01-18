@@ -75,7 +75,7 @@ export const useUsers = (_) => {
 
             priceId = totalPriceClub?.docs?.[0]?.id;
             totalPriceGlobal.value =
-                totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0;
+                Number(totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0);
 
             querySnapshot.forEach((doc) => {
                 result.push({
