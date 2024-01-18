@@ -210,7 +210,7 @@
                     :data="[...userDetailDay].reverse()"
                     border
                 >
-                    <el-table-column prop="day" label="Ngày" width="220" />
+                    <el-table-column prop="day" label="Ngày" width="150" />
                     <el-table-column prop="price" label="Tổng Tiền">
                         <template #default="scope">
                             <el-tag disable-transitions>{{
