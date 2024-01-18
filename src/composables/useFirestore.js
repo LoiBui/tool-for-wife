@@ -204,7 +204,7 @@ export const useUsers = (_) => {
     });
 
     const priceAfterDay = computed((_) => {
-        return +totalPriceGlobal.value + +totalPriceToday.value;
+        return +totalPriceGlobal.value + +totalPriceToday.value * 1000;
     });
 
     const removeUser = async (item) => {

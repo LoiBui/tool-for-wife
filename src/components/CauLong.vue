@@ -20,7 +20,6 @@
                     {{
                         ((totalPriceToday || 0) * 1000).toLocaleString("vi-VI")
                     }}
-                    VND
                 </p>
                 +
                 <p>
@@ -110,7 +109,7 @@
                                     onDayPriceChange(
                                         item._id,
                                         item.dayPrice,
-                                        item.countMatch
+                                        item.countMatch + 1
                                     )
                                 "
                                 :disabled="!isAllowModifier"
