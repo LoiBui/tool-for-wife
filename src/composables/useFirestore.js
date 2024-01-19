@@ -74,8 +74,9 @@ export const useUsers = (_) => {
                 ]);
 
             priceId = totalPriceClub?.docs?.[0]?.id;
-            totalPriceGlobal.value =
-                Number(totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0);
+            totalPriceGlobal.value = Number(
+                totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0
+            );
 
             querySnapshot.forEach((doc) => {
                 result.push({
@@ -130,8 +131,12 @@ export const useUsers = (_) => {
 
     fetchingData(true);
 
+    let isFirst = true;
     const checkAndUpdatePriceCLB = (lastUpdateDay, users, currentPrice) => {
         try {
+            if (!isFirst) {
+                return (isFirst = false);
+            }
             const lastDay = uniq(
                 users
                     .map((item) => Object.entries(item.days).map((it) => it[0]))
@@ -151,10 +156,13 @@ export const useUsers = (_) => {
                         }
                     });
 
+                const price = Number(total * 1000 + currentPrice);
                 updateDoc(doc(db, "price-clb", priceId), {
-                    totalPrice: total * 1000 + currentPrice,
+                    totalPrice: price,
                     lastUpdateDay: lastDay,
                 });
+
+                totalPriceGlobal.value = price;
             }
         } catch (error) {}
     };
