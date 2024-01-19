@@ -236,6 +236,12 @@ export const useUsers = (_) => {
         }, 0);
     });
 
+    const totalMatchToday = computed((_) => {
+        return usersToday.value.reduce((prev, curr) => {
+            return prev + (curr.active ? curr?.countMatch || 0 : 0);
+        }, 0);
+    });
+
     const maxPriceToday = computed((_) => {
         return usersToday.value.reduce((accumulator, currentValue) => {
             return Math.max(
@@ -329,6 +335,7 @@ export const useUsers = (_) => {
         maxPriceToday,
         totalPriceGlobal,
         priceAfterDay,
+        totalMatchToday,
         removeUser,
         addUser,
         currentDay,

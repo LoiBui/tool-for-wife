@@ -16,7 +16,10 @@
                 <p>Ngày: <br />{{ currentDay }}</p>
                 <div style="width: 10px"></div>
                 <p>
-                    <span style="white-space: nowrap">Hôm nay:</span> <br />
+                    <span style="white-space: nowrap"
+                        >Hôm nay: ({{ totalMatchToday }})</span
+                    >
+                    <br />
                     {{
                         ((totalPriceToday || 0) * 1000).toLocaleString("vi-VI")
                     }}
@@ -250,6 +253,7 @@ const {
     isAllowModifier,
     priceAfterDay,
     totalPriceGlobal,
+    totalMatchToday,
     removeUser,
     addUser,
     onPriceGlobalBlur,
