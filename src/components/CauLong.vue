@@ -282,7 +282,6 @@ const chartData = reactive({
 
 const userDetailDay = ref([]);
 const handleRowClick = (a) => {
-    console.log(a);
     let days = Object.entries(a.days || {}).sort((x, y) => {
         return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0;
     });
