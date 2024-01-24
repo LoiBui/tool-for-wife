@@ -145,7 +145,7 @@ export const useUsers = (_) => {
                 .sort()
                 ?.at(-1);
 
-            if (lastUpdateDay < lastDay) {
+            if (lastUpdateDay < lastDay && lastDay !== currentDay) {
                 let total = 0;
                 users
                     .map((item) => Object.entries(item.days))
@@ -238,7 +238,9 @@ export const useUsers = (_) => {
 
     const totalMatchToday = computed((_) => {
         return usersToday.value.reduce((prev, curr) => {
-            return prev + (curr.active ? curr?.countMatch || 0 : 0);
+            return (
+                Number(prev) + Number(curr.active ? curr?.countMatch || 0 : 0)
+            );
         }, 0);
     });
 
