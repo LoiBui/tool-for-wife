@@ -205,7 +205,7 @@
 
             <el-dialog v-model="dialogVisible" :fullscreen="true">
                 <div style="display: flex; justify-content: center">
-                    <div style="max-width: 400px">
+                    <div style="max-width: 430px">
                         <div v-if="dialogVisible">
                             <Chart :chartData="chartData" />
                         </div>
