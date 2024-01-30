@@ -134,7 +134,7 @@ export const useUsers = (_) => {
     let isFirst = true;
     const checkAndUpdatePriceCLB = (lastUpdateDay, users, currentPrice) => {
         try {
-            if (!isFirst) {
+            if (!isFirst || !isAllowModifier.value) {
                 return (isFirst = false);
             }
             const lastDay = uniq(
