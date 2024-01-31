@@ -204,42 +204,32 @@
             </div>
 
             <el-dialog v-model="dialogVisible" :fullscreen="true">
-                <div style="display: flex; justify-content: center">
-                    <div style="max-width: 430px">
-                        <div v-if="dialogVisible">
-                            <Chart :chartData="chartData" />
-                        </div>
-
-                        <el-table
-                            style="margin-top: 20px"
-                            :data="[...userDetailDay].reverse()"
-                            border
-                        >
-                            <el-table-column
-                                prop="day"
-                                label="Ngày"
-                                width="150"
-                            />
-                            <el-table-column prop="price" label="Tổng Tiền">
-                                <template #default="scope">
-                                    <el-tag disable-transitions>{{
-                                        scope.row.price.toLocaleString(
-                                            "vi-VI"
-                                        ) + " VND"
-                                    }}</el-tag>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Thua/Tổng">
-                                <template #default="scope">
-                                    <p v-if="scope.row.countMatch > 0">
-                                        {{ scope.row.price / 10000 }} /
-                                        {{ scope.row.countMatch }}
-                                    </p>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
+                <div style="max-width: 430px" v-if="dialogVisible">
+                    <Chart :chartData="chartData" />
                 </div>
+
+                <el-table
+                    style="margin-top: 20px"
+                    :data="[...userDetailDay].reverse()"
+                    border
+                >
+                    <el-table-column prop="day" label="Ngày" width="120" />
+                    <el-table-column prop="price" label="Tổng Tiền">
+                        <template #default="scope">
+                            <el-tag disable-transitions>{{
+                                scope.row.price.toLocaleString("vi-VI") + " VND"
+                            }}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Thua/Tổng">
+                        <template #default="scope">
+                            <p v-if="scope.row.countMatch > 0">
+                                {{ scope.row.price / 10000 }} /
+                                {{ scope.row.countMatch }}
+                            </p>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </el-dialog>
         </div>
     </div>
