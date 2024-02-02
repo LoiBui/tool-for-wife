@@ -158,28 +158,54 @@
                     width="240"
                 >
                     <template #default="scope">
-                        <span
-                            :style="{
-                                opacity: scope.$index < 3 ? 1 : 0,
-                            }"
-                        >
-                            <template v-if="scope.$index === 0"> 🏅 </template>
-                            <template v-else-if="scope.$index === 1">
-                                🥈
-                            </template>
-                            <template v-else> 🥉 </template>
-                        </span>
-                        {{ scope.row.name }}
-                        <span v-if="scope.row.totalMatch > 0"
-                            >(<span style="color: red; font-weight: bold">{{
-                                scope.row.totalMatchLost
-                            }}</span>
-                            /
-                            <span style="font-weight: bold">{{
-                                scope.row.totalMatch
-                            }}</span
-                            >)</span
-                        >
+                        <div>
+                            <span
+                                :style="{
+                                    opacity: scope.$index < 3 ? 1 : 0,
+                                }"
+                            >
+                                <template v-if="scope.$index === 0">
+                                    🏅
+                                </template>
+                                <template v-else-if="scope.$index === 1">
+                                    🥈
+                                </template>
+                                <template v-else> 🥉 </template>
+                            </span>
+                            {{ scope.row.name }}
+                            <span v-if="scope.row.totalMatch > 0"
+                                >(<span style="color: red; font-weight: bold">{{
+                                    scope.row.totalMatchLost
+                                }}</span>
+                                /
+                                <span style="font-weight: bold">{{
+                                    scope.row.totalMatch
+                                }}</span
+                                >)</span
+                            >
+                            <div
+                                :set="
+                                    (per =
+                                        (+scope.row.totalMatchLost /
+                                            +scope.row.totalMatch) *
+                                        100)
+                                "
+                                style="margin-left: 22px"
+                            >
+                                <el-progress
+                                    v-if="per"
+                                    :show-text="false"
+                                    :percentage="per"
+                                    :color="
+                                        per >= 75
+                                            ? 'red'
+                                            : per >= 50
+                                            ? 'orange'
+                                            : '#67c23a'
+                                    "
+                                ></el-progress>
+                            </div>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="price" label="Tổng Tiền">
@@ -223,10 +249,32 @@
                     </el-table-column>
                     <el-table-column label="Thua/Tổng">
                         <template #default="scope">
-                            <p v-if="scope.row.countMatch > 0">
-                                {{ scope.row.price / 10000 }} /
-                                {{ scope.row.countMatch }}
-                            </p>
+                            <div v-if="scope.row.countMatch > 0">
+                                <p>
+                                    {{ scope.row.price / 10000 }} /
+                                    {{ scope.row.countMatch }}
+                                </p>
+                                <div
+                                    :set="
+                                        (per =
+                                            (+(scope.row.price / 10000) /
+                                                +scope.row.countMatch) *
+                                            100)
+                                    "
+                                >
+                                    <el-progress
+                                        :show-text="false"
+                                        :percentage="per"
+                                        :color="
+                                            per >= 75
+                                                ? 'red'
+                                                : per >= 50
+                                                ? 'orange'
+                                                : '#67c23a'
+                                        "
+                                    ></el-progress>
+                                </div>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
