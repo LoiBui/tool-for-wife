@@ -330,15 +330,7 @@ const chartData = reactive({
 
 const userDetailDay = ref([]);
 const handleRowClick = (a) => {
-    let days = Object.entries(a.days || {}).sort((x, y) => {
-        const a = x[0]?.split("/");
-        const cbDayA = `${a[2]}${a[1]}${a[0]}`;
-
-        const b = y[0]?.split("/");
-        const cbDayB = `${b[2]}${b[1]}${b[0]}`;
-
-        return cbDayA < cbDayB ? -1 : cbDayA > cbDayB ? 1 : 0;
-    });
+    let days = Object.entries(a.days || {}).sortDayArray();
 
     if (days.length <= 0) {
         return ElMessage({

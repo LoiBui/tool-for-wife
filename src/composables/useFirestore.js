@@ -48,6 +48,31 @@ const getCurrentDate = (date) => {
     return formattedToday;
 };
 
+const formatTimeDiff = (x) => {
+    const a = x?.split("/");
+    return `${a[2]}${a[1]}${a[0]}`;
+};
+
+Array.prototype.sortDayArray = function () {
+    return this.sort((x, y) => {
+        const cbDayA = formatTimeDiff(x[0]);
+
+        const cbDayB = formatTimeDiff(y[0]);
+
+        return cbDayA < cbDayB ? -1 : cbDayA > cbDayB ? 1 : 0;
+    });
+};
+
+Array.prototype.sortDay = function () {
+    return this.sort((x, y) => {
+        const cbDayA = formatTimeDiff(x);
+
+        const cbDayB = formatTimeDiff(y);
+
+        return cbDayA < cbDayB ? -1 : cbDayA > cbDayB ? 1 : 0;
+    });
+};
+
 export const useUsers = (_) => {
     const users = ref([]);
     const usersToday = ref([]);
@@ -142,10 +167,13 @@ export const useUsers = (_) => {
                     .map((item) => Object.entries(item.days).map((it) => it[0]))
                     .flat(2)
             )
-                .sort()
+                .sortDay()
                 ?.at(-1);
 
-            if (lastUpdateDay < lastDay && lastDay !== currentDay) {
+            if (
+                formatTimeDiff(lastUpdateDay) < formatTimeDiff(lastDay) &&
+                lastDay !== currentDay
+            ) {
                 let total = 0;
                 users
                     .map((item) => Object.entries(item.days))
