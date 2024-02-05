@@ -155,7 +155,7 @@
                 <el-table-column
                     prop="name"
                     label="Tên  (Thua/Tổng)"
-                    width="240"
+                    width="230"
                 >
                     <template #default="scope">
                         <div>
@@ -180,8 +180,15 @@
                                 /
                                 <span style="font-weight: bold">{{
                                     scope.row.totalMatch
-                                }}</span
-                                >)</span
+                                }}</span>
+                                ~
+                                {{
+                                    Math.round(
+                                        (+scope.row.totalMatchLost /
+                                            +scope.row.totalMatch) *
+                                            100
+                                    )
+                                }}%)</span
                             >
                             <div
                                 :set="
@@ -253,6 +260,14 @@
                                 <p>
                                     {{ scope.row.price / 10000 }} /
                                     {{ scope.row.countMatch }}
+                                    ~
+                                    {{
+                                        Math.round(
+                                            (+(scope.row.price / 10000) /
+                                                +scope.row.countMatch) *
+                                                100
+                                        )
+                                    }}%
                                 </p>
                                 <div
                                     :set="
