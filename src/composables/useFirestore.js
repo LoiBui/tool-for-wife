@@ -11,6 +11,7 @@ import {
 import { db } from "@/lib/firebase";
 import { ElLoading, ElMessage } from "element-plus";
 import { uniq } from "lodash";
+import { useParams } from "./useParams";
 // import "./import";
 
 const calculatorPrice = (row) => {
@@ -76,7 +77,10 @@ Array.prototype.sortDay = function () {
 export const useUsers = (_) => {
     const users = ref([]);
     const usersToday = ref([]);
-    const currentDay = getCurrentDate();
+
+    const { day: dayUrl } = useParams();
+    const currentDay = dayUrl?.replace(/-/g, "/") || getCurrentDate();
+
     const isLoading = ref(true);
     const totalPriceGlobal = ref(0);
     let priceId = null;
@@ -140,11 +144,12 @@ export const useUsers = (_) => {
                     return x.order < y.order ? -1 : x.order > y.order ? 1 : 0;
                 });
 
-            checkAndUpdatePriceCLB(
-                totalPriceClub?.docs?.[0]?.data?.()?.lastUpdateDay,
-                result,
-                totalPriceGlobal.value
-            );
+            !dayUrl &&
+                checkAndUpdatePriceCLB(
+                    totalPriceClub?.docs?.[0]?.data?.()?.lastUpdateDay,
+                    result,
+                    totalPriceGlobal.value
+                );
         } catch (error) {
             console.log(error);
             users.value = [];
@@ -197,11 +202,8 @@ export const useUsers = (_) => {
 
     const userList = computed((_) => {
         return users.value
-            .filter((item) => item.active)
+            .filter((item) => item.active && item.isDeteleUser !== true)
             .sort((a, b) => {
-                if (a.isDeteleUser) {
-                    return 1;
-                }
                 if (calculatorPrice(a) > calculatorPrice(b)) {
                     return -1;
                 } else if (calculatorPrice(a) < calculatorPrice(b)) {
