@@ -109,11 +109,8 @@
                                 :min="0"
                                 :step="10"
                                 @change="
-                                    onDayPriceChange(
-                                        item._id,
-                                        item.dayPrice,
-                                        item.countMatch + 1
-                                    )
+                                    (cur, old) =>
+                                        handleNumberChange(cur, old, item)
                                 "
                                 :disabled="!isAllowModifier"
                                 style="width: 100%"
@@ -324,6 +321,14 @@ const {
 
 const onFocus = (e) => {
     e.target.select();
+};
+
+const handleNumberChange = (cur, old, item) => {
+    onDayPriceChange(
+        item._id,
+        item.dayPrice,
+        item.countMatch + (cur > old ? 1 : -1)
+    );
 };
 
 //detail user
