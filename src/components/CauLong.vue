@@ -222,6 +222,19 @@
                 </el-table-column>
             </el-table>
 
+            <div style="margin-top: 40px">
+                <h4>Note</h4>
+                <el-input
+                    type="textarea"
+                    :rows="4"
+                    placeholder="Please input"
+                    v-model="note"
+                    :disabled="!isAllowModifier"
+                    @blur="handleNoteBlur"
+                >
+                </el-input>
+            </div>
+
             <div style="margin-top: 40px" v-show="isAllowModifier">
                 <h4>Thêm User</h4>
                 <el-input v-model="input" placeholder="Nhập tên" />
@@ -302,6 +315,7 @@ import { useUsers } from "@/composables/useFirestore";
 import Chart from "./Chart";
 
 const input = ref("");
+
 const {
     userList,
     usersToday,
@@ -317,6 +331,8 @@ const {
     removeUser,
     addUser,
     onPriceGlobalBlur,
+    note,
+    updateNote,
 } = useUsers();
 
 const onFocus = (e) => {
@@ -329,6 +345,10 @@ const handleNumberChange = (cur, old, item) => {
         item.dayPrice,
         item.countMatch + (cur > old ? 1 : -1)
     );
+};
+
+const handleNoteBlur = (_) => {
+    updateNote(note.value);
 };
 
 //detail user

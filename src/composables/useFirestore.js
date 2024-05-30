@@ -83,6 +83,8 @@ export const useUsers = (_) => {
 
     const isLoading = ref(true);
     const totalPriceGlobal = ref(0);
+    const note = ref("");
+
     let priceId = null;
     const isAllowModifier = ref(window.location.href.includes("bcl142861"));
 
@@ -106,6 +108,8 @@ export const useUsers = (_) => {
             totalPriceGlobal.value = Number(
                 totalPriceClub?.docs?.[0]?.data?.()?.totalPrice || 0
             );
+
+            note.value = totalPriceClub?.docs?.[0]?.data?.()?.note || "";
 
             querySnapshot.forEach((doc) => {
                 result.push({
@@ -356,6 +360,12 @@ export const useUsers = (_) => {
         }
     };
 
+    const updateNote = (val) => {
+        updateDoc(doc(db, "price-clb", priceId), {
+            note: val,
+        });
+    };
+
     return {
         isLoading,
         users,
@@ -373,5 +383,7 @@ export const useUsers = (_) => {
         currentDay,
         isAllowModifier,
         onPriceGlobalBlur,
+        updateNote,
+        note,
     };
 };
