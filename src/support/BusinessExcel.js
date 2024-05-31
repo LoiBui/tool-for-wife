@@ -143,12 +143,14 @@ export const exportResultFileExcel = (file, optionKey = []) => {
                             if (checkHeaderRow) {
                                 headerRow.push([obj.key]);
                             }
+                        } else {
+                            obj.value = "";
+                            out.push(obj);
                         }
                     });
                     checkHeaderRow = false;
                     return out;
                 });
-
             writeFile(combineData, headerRow);
         });
     };
