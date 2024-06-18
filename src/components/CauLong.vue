@@ -3,7 +3,7 @@
         style="padding: 10px 15px; display: flex; justify-content: center"
         v-if="!isLoading"
     >
-        <div style="max-width: 400px">
+        <div style="max-width: 400px" :key="reloadKey">
             <div
                 style="
                     font-size: 12px;
@@ -106,7 +106,6 @@
                             <div style="width: 4px"></div>
                             <el-input-number
                                 v-model="item.dayPrice"
-                                :min="0"
                                 :step="10"
                                 @change="
                                     (cur, old) =>
@@ -315,6 +314,7 @@ import { useUsers } from "@/composables/useFirestore";
 import Chart from "./Chart";
 
 const input = ref("");
+const reloadKey = ref(0);
 
 const {
     userList,
@@ -340,11 +340,15 @@ const onFocus = (e) => {
 };
 
 const handleNumberChange = (cur, old, item) => {
-    onDayPriceChange(
-        item._id,
-        item.dayPrice,
-        item.countMatch + (cur > old ? 1 : -1)
-    );
+    if (cur > old) {
+        item.dayPrice = item.dayPrice - 10;
+    } else {
+        item.dayPrice = item.dayPrice + 20;
+    }
+
+    reloadKey.value++;
+
+    onDayPriceChange(item._id, item.dayPrice, item.countMatch + 1);
 };
 
 const handleNoteBlur = (_) => {
