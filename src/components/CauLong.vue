@@ -111,6 +111,8 @@
                                     (cur, old) =>
                                         handleNumberChange(cur, old, item)
                                 "
+                                @focus="handleNumberFocus"
+                                @blur="handleNumberBlur(item)"
                                 :disabled="!isAllowModifier"
                                 style="width: 100%"
                                 :style="{
@@ -339,7 +341,23 @@ const onFocus = (e) => {
     e.target.select();
 };
 
+let checkChange = false;
+
+const handleNumberBlur = async (item) => {
+    await onDayPriceChange(item._id, item.dayPrice, item.countMatch);
+
+    checkChange = false;
+};
+
+const handleNumberFocus = (_) => {
+    checkChange = true;
+};
+
 const handleNumberChange = (cur, old, item) => {
+    if (checkChange) {
+        return;
+    }
+
     if (cur > old) {
         item.dayPrice = item.dayPrice - 10;
     } else {

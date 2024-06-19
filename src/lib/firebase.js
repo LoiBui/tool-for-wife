@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+let firebaseConfig = {
     apiKey: "AIzaSyBMrDIZGVCW2eIrmqX0poRSvyE5k9tFJug",
     authDomain: "cau-long.firebaseapp.com",
     databaseURL:
@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 //dev
-// const firebaseConfig = {
+// firebaseConfig = {
 //     apiKey: "AIzaSyCXU32bWUkjlF7HzzE5WXPTYBU29IQswt4",
 //     authDomain: "vuetest198.firebaseapp.com",
 //     databaseURL: "https://vuetest198.firebaseio.com",
