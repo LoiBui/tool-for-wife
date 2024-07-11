@@ -227,7 +227,7 @@
                 <h4>Note</h4>
                 <el-input
                     type="textarea"
-                    :rows="4"
+                    :rows="10"
                     placeholder="Please input"
                     v-model="note"
                     :disabled="!isAllowModifier"
