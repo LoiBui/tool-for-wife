@@ -165,10 +165,9 @@ export const writeFile = (data, headerRow) => {
             fitToWidth: 1,
         },
     });
-
     data.forEach((row) => {
         row.forEach((element, index) => {
-            rowData[index].push(element.value);
+            rowData[index]?.push(element.value);
         });
     });
     sheet.addRows(rowData);
