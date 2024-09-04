@@ -85,7 +85,10 @@ export const exportResultFileExcel = (file, optionKey = []) => {
             // Here is your object
             //   var XL_row_object =
             const combineData = XLSX.utils
-                .sheet_to_row_object_array(workbook.Sheets[sheetName])
+                .sheet_to_row_object_array(workbook.Sheets[sheetName], {
+                    blankRows: false,
+                    defval: "",
+                })
                 ?.filter((row) => {
                     const find = Object.entries(row).find((item) => {
                         if (item[0].includes("Số tiền đã chi tiêu")) {
