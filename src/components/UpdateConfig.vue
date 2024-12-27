@@ -40,7 +40,7 @@
         </div>
         <div v-else style="width: 400px">
             <div>
-                <el-radio-group v-model="config.project" size="large">
+                <el-radio-group v-model="project" size="large">
                     <el-radio-button :label="1">Solana PVT1</el-radio-button>
                     <el-radio-button :label="2">Solana PVT2</el-radio-button>
                 </el-radio-group>
@@ -137,25 +137,95 @@
                             <el-input-number v-model="config.devWallet.to" />
                         </div>
                     </div>
+                    <hr style="margin: 20px 0px" />
+                    <div>
+                        <label for="">EXCHANGE</label>
+                        <div
+                            style="
+                                margin-top: 10px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <el-input
+                                v-model="config.exchange"
+                                style="width: 240px"
+                                placeholder="Please input"
+                            />
+                        </div>
+                    </div>
+
+                    <hr style="margin: 20px 0px" />
+                    <div>
+                        <label for="">BOT CONFIG</label>
+                        <div
+                            style="
+                                margin-top: 10px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <p>Bot TOKEN</p>
+                            <el-input
+                                v-model="config.bot.BotToken"
+                                style="width: 240px"
+                                placeholder="Please input"
+                                type="textarea"
+                                :rows="4"
+                            />
+                        </div>
+                        <div
+                            style="
+                                margin-top: 10px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <p>CHANNEL ID</p>
+                            <el-input
+                                v-model="config.bot.ChannelId"
+                                style="width: 240px"
+                                placeholder="Please input"
+                            />
+                        </div>
+                    </div>
                 </el-card>
                 <div
                     style="
                         display: flex;
                         justify-content: end;
                         margin-top: 20px;
+                        margin-bottom: 20px;
                     "
                     @click="handleClick"
                 >
                     <el-button type="primary">Save</el-button>
                 </div>
             </div>
+            <div
+                style="
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                "
+            >
+                <div>LOG</div>
+                <el-input
+                    :disabled="true"
+                    v-model="log"
+                    type="textarea"
+                    :rows="4"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ElNotification } from "element-plus";
-import { reactive, ref } from "vue";
+import { ElLoading, ElNotification } from "element-plus";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 
 const ruleFormRef = ref();
 const isLogged = ref(false);
@@ -204,31 +274,122 @@ const submitForm = (formEl) => {
     });
 };
 
+const project = ref(1);
 const config = reactive({
-    project: 1,
     liquid: {
-        from: 10000,
-        to: 80000,
+        from: 0,
+        to: 0,
     },
     tradingVolume: {
-        from: 90000,
-        to: 150000,
+        from: 0,
+        to: 0,
     },
     marketCap: {
-        from: 55000,
-        to: 80000,
+        from: 0,
+        to: 0,
     },
     top10Wallet: {
         from: 0,
-        to: 40,
+        to: 0,
     },
     devWallet: {
         from: 0,
-        to: 10,
+        to: 0,
+    },
+    exchange: "",
+    bot: {
+        ChannelId: "",
+        BotToken: "",
     },
 });
 
-const handleClick = () => {
-    console.log(config);
+const fetchConfig = async () => {
+    try {
+        const myHeaders = new Headers();
+        myHeaders.append("username", localStorage.getItem("username"));
+        myHeaders.append("password", localStorage.getItem("password"));
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow",
+        };
+
+        return await fetch(
+            "http://42.116.105.237:8000/get-params",
+            requestOptions
+        ).then((response) => response.json());
+    } catch (error) {
+        alert("server error!!!");
+    }
+};
+
+const dataObj = ref();
+
+onMounted(async () => {
+    const loading = ElLoading.service({
+        lock: true,
+        text: "Loading",
+        background: "rgba(0, 0, 0, 0.7)",
+    });
+    const data = await fetchConfig();
+
+    if (data) {
+        dataObj.value = data;
+    }
+    loading.close();
+});
+
+const combineValue = computed(() => {
+    return { dataObj: dataObj.value, project: project.value };
+});
+
+watch(
+    combineValue,
+    (val) => {
+        if (val.project === 1 && val.dataObj[1]) {
+            Object.assign(config, val.dataObj[1]);
+        } else if (val.dataObj[2]) {
+            Object.assign(config, val.dataObj[2]);
+        }
+    },
+    {
+        deep: true,
+    }
+);
+
+const log = ref('');
+const handleClick = async () => {
+    const loading = ElLoading.service({
+        lock: true,
+        text: "Loading",
+        background: "rgba(0, 0, 0, 0.7)",
+    });
+    try {
+        const myHeaders = new Headers();
+        myHeaders.append("username", localStorage.getItem("username"));
+        myHeaders.append("password", localStorage.getItem("password"));
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            redirect: "follow",
+            body: JSON.stringify({
+                project: project.value,
+                config: config,
+            }),
+        };
+
+        const res = await fetch(
+            "http://42.116.105.237:8000/update-params",
+            requestOptions
+        ).then((response) => response.json());
+        log.value = res?.msg;
+    } catch (error) {
+        console.log(error);
+        alert("server error!!!");
+    } finally {
+        loading.close();
+    }
 };
 </script>
