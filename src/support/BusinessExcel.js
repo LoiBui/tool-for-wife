@@ -15,27 +15,17 @@ const rowValue = [
         isPrice: true,
     },
     {
-        key: "Số tiền - like",
-        default: "",
-        modelCheck: "stl",
+        key: "Kết quả",
     },
     {
-        key: "Lượt hiển thị",
+        key: "Chi phí trên mỗi kết quả",
+        keyOther: [
+            "Chi phí trên mỗi kết quả".toLocaleLowerCase().replaceAll(" ", ""),
+        ],
     },
     {
         key: "CPM (Chi phí trên mỗi 1.000 lần hiển thị) (VND)",
         isPrice: true,
-    },
-    {
-        key: "Người tiếp cận",
-    },
-    {
-        key: "Tần suất",
-        isRound: true,
-    },
-    {
-        key: "Số lần nhấp (Tất cả)",
-        keyOther: ["Số lần nhấp (all)".toLocaleLowerCase().replaceAll(" ", "")],
     },
     {
         key: "CPC (Tất cả) (VND)",
@@ -48,21 +38,13 @@ const rowValue = [
         keyOther: ["CTR (all)".toLocaleLowerCase().replaceAll(" ", "")],
     },
     {
-        key: "CTR duy nhất (Tất cả)",
-        isRound: true,
-        modelCheck: "ctr",
-        keyOther: ["CTR duy nhất (all)".toLocaleLowerCase()],
+        key: "ThruPlay",
     },
     {
-        key: "Like/TT",
-        default: "",
-        modelCheck: "ltt",
+        key: "Lượt phát 25% thời lượng video",
     },
     {
-        key: "Lượt click vào liên kết",
-    },
-    {
-        key: "Kết quả",
+        key: "Lượt phát 95% thời lượng video",
     },
 ];
 export const exportResultFileExcel = (file, optionKey = []) => {
