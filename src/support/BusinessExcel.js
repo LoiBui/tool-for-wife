@@ -26,6 +26,11 @@ const rowValue = [
     {
         key: "CPM (Chi phí trên mỗi 1.000 lần hiển thị) (VND)",
         isPrice: true,
+        keyOther: [
+            "CPM (Chi phí trên mỗi 1.000 lượt hiển thị) (VND)"
+                .toLocaleLowerCase()
+                .replaceAll(" ", ""),
+        ],
     },
     {
         key: "CPC (Tất cả) (VND)",
